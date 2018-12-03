@@ -26,7 +26,9 @@ Next, remember that we deployed the application on two of our servers, but we cr
 
 ```kubectl get pods --selector="run=load-balancer-example" --output=wide```
 
-Take the ip of one of these cluster vms, and set the tcp port for your NodePort on this vm; we must set the firewall rules through Google Cloud on this vm to accept your NodePort. We know our NodePort from running the ```kubectl describe``` command previously. Now we can curl the message:
+Take the ip of one of these cluster vms, and set the tcp port for your NodePort on this vm. To do this, we must configure the firewall rules on the vm through Google Cloud to accept your NodePort. We know our NodePort from running the ```kubectl describe``` command previously.
+
+Now we can curl the message:
 
 ```curl http://<IP of your vm>:<NodePort>```
 
