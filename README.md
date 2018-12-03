@@ -35,3 +35,5 @@ Now we can curl the message:
 Output:
 
 ```Hello Kubernetes!```
+
+We have now established a connection to the containerized application.
