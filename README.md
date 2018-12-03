@@ -2,11 +2,13 @@
 
 In this project, we will learn about the concept of a NodePort as a service in the Kubernetes. NodePorts monitor external requests and directs them to, say, an application within the node. We will spin up multiple clusters and deploy the application on a number of them.
 
-Firstly, let's create a cluster of nodes of size 3 (default):
+*NOTE:* A node is a vm.
 
-```gcloud container clusters create test --zone europe-west2-c```
+Firstly, let's create a cluster of nodes of size 1 (if ```--num-nodes``` unspecified then 3 nodes will be created):
 
-You can check your vm instances in Google Cloud, 3 new vms should have been created. Next, let's deploy a hello-world application on two of our vms:
+```gcloud container clusters create test --zone europe-west2-c --num-nodes 1```
+
+You can check your vm instances in Google Cloud, one new vm (node) should have been created. Next, let's create two pods each containing our hello-world application (deploying the hello-world application on our node):
 
 ```kubectl run hello-world --replicas=2 --labels="run=load-balancer-example" --image=gcr.io/google-samples/node-hello:1.0  --port=8080```
 
@@ -22,11 +24,13 @@ A NodePort is a service that operates on ports 30000 - 32767. If you do not spec
 
 ```kubectl describe services example-service```
 
-Next, remember that we deployed the application on two of our servers, but we created 3? To find out which servers we installed the applications on, run:
+Next, let us see the pods that we created, run:
 
 ```kubectl get pods --selector="run=load-balancer-example" --output=wide```
 
-Take the ip of one of these cluster vms, and set the tcp port for your NodePort on this vm. To do this, we must configure the firewall rules on the vm through Google Cloud to accept your NodePort. We know our NodePort from running the ```kubectl describe``` command previously.
+We can see two pods attached to the one node that we created for our cluster.
+
+Next, allow tcp access for your NodePort on this node. To do this, we must configure the firewall rules on the node through Google Cloud to accept your NodePort. We know our NodePort from running the ```kubectl describe``` command previously.
 
 Now we can curl the message:
 
@@ -36,4 +40,4 @@ Output:
 
 ```Hello Kubernetes!```
 
-We have now established a connection to the containerized application.
+We have now established a connection to the containerized application within the node. The service acts as a load balancer, automatically managing traffic.
